@@ -10,65 +10,68 @@ import subprocess
 from sys import stderr
 from time import sleep
 
-from PIL import Image, ImageFont
-from lib_oled96 import Ssd1306
-from smbus import SMBus
+from PIL import ImageFont, Image
+from luma.core.interface.serial import i2c
+from luma.core.render import canvas
+from luma.oled.device import ssd1306
 
-from dht import get_values
+# from dht import get_values
 
-# Display setup, methods and members
-# 0 = Raspberry Pi 1, 1 = Raspberry Pi > 1
-i2cbus = SMBus(1)
-oled = Ssd1306(i2cbus)
-draw = oled.canvas
-c = '\''
-
-# OLED 0.96" 128*64
-left = 5
-top = 7
+serial = i2c(port=1, address=0x3C)
+oled = ssd1306(serial)
+draw = canvas(oled)
+left = 0
+top = 0
 
 # Fonts
 font_arial = ImageFont.truetype('fonts/arial.ttf', 12)
-font_free_sans = ImageFont.truetype('fonts/FreeSans.ttf', 12)
+font_free_sans = ImageFont.truetype('fonts/FreeSans.ttf', 10)
+font_free_sans12 = ImageFont.truetype('fonts/FreeSans.ttf', 12)
 
 
-def __show_hum_temp(time):
-    oled.cls()
-    oled.display()
-    # Write the lines of text.
-    draw.text((left, top), get_values()[0], font=font_free_sans, fill=255)
-    draw.text((left, top + 15), get_values()[1], font=font_free_sans, fill=255)
-    # draw.text((left, top + 30), get_values()[1], font=font_free_sans, fill=255)
-    # draw.text((left, top + 30), "any string", font=font_free_sans, fill=255)
-    # draw.text((left, top + 45), "any string", font=font_free_sans, fill=255)
-    oled.display()
-    sleep(time)
+def test():
+    oled_font = ImageFont.truetype('fonts/FreeSans.ttf', 12)
+    with canvas(oled) as draw:
+        draw.rectangle(oled.bounding_box, outline="black", fill="white")
+        draw.text((10, 10), "OLED-Display", font=oled_font, fill="black")
+
+
+def __show_hum_temp():
+    oled.clear()
+    with canvas(oled) as draw:
+        # Write the lines of text.
+        draw.text((left, top), "line 1", font=font_free_sans12,
+                  fill=255)
+        draw.text((left, top + 15), "line 2", font=font_free_sans12,
+                  fill=255)
+        draw.text((left, top + 30), "line 3", font=font_free_sans12,
+                  fill=255)
+        draw.text((left, top + 45), "Line 4", font=font_free_sans12,
+                  fill=255)
 
 
 def __get_core_temp():
     temp = int(open('/sys/class/thermal/thermal_zone0/temp').read())
     one = str(temp).__getitem__(0)
     two = str(temp).__getitem__(1)
-    temp_str = '{0}{1}{2}{3}'.format(one, two, c, 'C')
+    temp_str = '{0}{1}{2}{3}'.format(one, two, '°', 'C')
     return temp_str
 
 
-def __show_pi(time):
-    oled.cls()
+def __show_pi():
+    oled.clear()
     # image inverted
-    draw.rectangle((32, top - 3, 95, 63), outline=1, fill=1)
-    draw.bitmap((32, top - 3), Image.open('pi_logo.png'), fill=0)
-    oled.display()
-    sleep(time)
+    with canvas(oled) as draw:
+        draw.rectangle((32, top - 3, 95, 63), outline=1, fill=1)
+        draw.bitmap((32, top - 3), Image.open('pi_logo.png'), fill=0)
 
 
-def __show_state(time):
+def __show_state():
     """
     Shell scripts for system monitoring from here :
     https://unix.stackexchange.com/questions/119126/command-to-display-memory-usage-disk-usage-and-cpu-load
     """
-    oled.cls()
-    oled.display()
+    oled.clear()
     cmd = "hostname -I | cut -d\' \' -f1"
     ip = subprocess.check_output(cmd, shell=True)
     cmd = "top - bn1 | grep \"Cpu(s)\" | sed \"s/.*, *\\([0-9.]*\\)%* id.*/\\1/\" | " \
@@ -80,26 +83,36 @@ def __show_state(time):
     cmd = "df -h | awk '$NF==\"/\"{printf \"Disk : %d / %d GB %s\", $3,$2,$5}'"
     disk = subprocess.check_output(cmd, shell=True)
 
-    # Write the lines of text.
-    draw.text((left, top), "IP : " + str(ip), font=font_free_sans, fill=255)
-    draw.text((left, top + 15), str(cpu), font=font_free_sans, fill=255)
-    draw.text((left, top + 30), str(mem_usage), font=font_free_sans, fill=255)
-    draw.text((left, top + 45), str(disk), font=font_free_sans, fill=255)
-    oled.display()
-    sleep(time)
+    with canvas(oled) as draw:
+        # Write the lines of text.
+        draw.text((left, top), f"IP: {ip.decode('utf-8')}",
+                  font=font_free_sans,
+                  fill=255)
+        draw.text((left, top + 15), f"{cpu.decode('utf-8')}",
+                  font=font_free_sans, fill=255)
+        draw.text((left, top + 30), f"{mem_usage.decode('utf-8')}",
+                  font=font_free_sans,
+                  fill=255)
+        draw.text((left, top + 45), f"{disk.decode('utf-8')}",
+                  font=font_free_sans, fill=255)
 
 
 if __name__ == '__main__':
+
     while True:
 
         try:
-            __show_pi(3)
-            __show_state(5)
-            __show_hum_temp(15)
+            # test()
+            # __show_pi()
+            # sleep(3)
+            __show_state()
+            sleep(5)
+            __show_hum_temp()
+            sleep(15)
 
         except KeyboardInterrupt:
             stderr.write('Oled interrupted.')
-            oled.cls()
+            oled.clear()
             exit()
 
         except:
