@@ -9,12 +9,9 @@
 from sys import stdout, stderr
 from time import sleep
 
-import Adafruit_DHT
-from Adafruit_DHT import Raspberry_Pi_2
+import adafruit_dht
 
-SENSOR = Adafruit_DHT.AM2302
-PIN = 24
-PLAT = Raspberry_Pi_2
+SENSOR = adafruit_dht.DHT22(24)
 SPACE = " "
 
 
@@ -23,9 +20,8 @@ def get_values():
     hum_str = SPACE
     ret_str = SPACE
     stdout.write("Get temperature and humidity values: ")
-    humidity, temperature = Adafruit_DHT.read_retry(SENSOR,
-                                                    PIN,
-                                                    platform=PLAT)
+    humidity = SENSOR.humidity
+    temperature = SENSOR.temperature
 
     if humidity is not None and temperature is not None:
         temp_str = f"{temperature:04.1f}°C"
