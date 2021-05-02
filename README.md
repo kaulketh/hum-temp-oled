@@ -22,12 +22,7 @@
 - https://github.com/adafruit/Adafruit_Blinka/issues/259
 
 ## Run on boot as service
-`sudo nano /etc/rc.local`
-```
-python3 /home/pi/oled/oled.py &
-```
-
-#### Another possibility to enable run at bootup is to use the _systemd_ files.
+#### A possibility to enable run at bootup is to use the _systemd_ files.
 _systemd_ provides a standard process for controlling what programs run when a Linux system boots up. Note that systemd is available only from the Jessie versions of Raspbian OS.
 
 ### Create A Unit File
