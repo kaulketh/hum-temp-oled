@@ -7,6 +7,7 @@
 # https://github.com/kaulketh
 # -----------------------------------------------------------
 import subprocess
+from io import BytesIO
 from sys import stderr
 from time import sleep
 
@@ -24,18 +25,31 @@ left = 0
 top = 0
 
 # Load fonts
-# Load default font.
-# font = ImageFont.load_default()
-# Alternatively load a TTF font.  Make sure the .ttf font file is in the
-# same directory as the python script!
+# font = ImageFont.load_default()  # Load default font
+# Alternatively load a TTF font.
 # Some other nice fonts to try: http://www.dafont.com/bitmap.php
-tahoma = ImageFont.truetype('fonts/tahoma.ttf', 30)
-dejavu = ImageFont.truetype('fonts/dejavu.ttf', 28)
-arial_10 = ImageFont.truetype('fonts/arial.ttf', 10)
-arial_12 = ImageFont.truetype('fonts/arial.ttf', 12)
-free_sans_10 = ImageFont.truetype('fonts/FreeSans.ttf', 10)
-free_sans_12 = ImageFont.truetype('fonts/FreeSans.ttf', 12)
-free_sans_16 = ImageFont.truetype('fonts/FreeSans.ttf', 16)
+
+font_dir = "/home/pi/oled/fonts/"
+
+
+def __load_font(font_file, size):
+    """
+     To avoid issue related to how Unicode file paths are handled on platforms,
+     read the font file in binary form.
+    """
+
+    with open(font_file, "rb") as f:
+        bytes_font = BytesIO(f.read())
+    return ImageFont.truetype(bytes_font, size)
+
+
+tahoma = __load_font(f"{font_dir}tahoma.ttf", 30)
+dejavu = __load_font(f"{font_dir}dejavu.ttf", 28)
+arial_10 = __load_font(f"{font_dir}arial.ttf", 10)
+arial_12 = __load_font(f"{font_dir}arial.ttf", 12)
+free_sans_10 = __load_font(f"{font_dir}FreeSans.ttf", 10)
+free_sans_12 = __load_font(f"{font_dir}FreeSans.ttf", 12)
+free_sans_16 = __load_font(f"{font_dir}FreeSans.ttf", 16)
 
 
 def test():
@@ -45,13 +59,13 @@ def test():
         draw.text((10, 10), "OLED-Display", font=oled_font, fill="black")
 
 
-def __show_hum_temp(line1, line2, left=left, font=ImageFont.load_default()):
+def __show_hum_temp(line1, line2, x=left, font=ImageFont.load_default()):
     hum, temp = get_values()[0], get_values()[1]
     oled.clear()
     with canvas(oled) as draw:
         # Write the lines of text.
-        draw.text((left, line1), f"H {hum}", font=font, fill=255)
-        draw.text((left, line2), f"T {temp}", font=font, fill=255)
+        draw.text((x, line1), f"H {hum}", font=font, fill=255)
+        draw.text((x, line2), f"T  {temp}", font=font, fill=255)
 
 
 def __get_core_temp():
@@ -107,7 +121,7 @@ def __show_state(font=ImageFont.load_default()):
 def run_at_128x64():
     __show_state(font=free_sans_10)
     sleep(5)
-    __show_hum_temp(top + 3, top + 35, left=5, font=dejavu)
+    __show_hum_temp(top + 3, top + 35, x=5, font=dejavu)
     sleep(15)
 
 
