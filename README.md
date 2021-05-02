@@ -23,7 +23,8 @@
 
 ## Run on boot as service
 #### A possibility to enable run at bootup is to use the _systemd_ files.
-_systemd_ provides a standard process for controlling what programs run when a Linux system boots up. Note that systemd is available only from the Jessie versions of Raspbian OS.
+_systemd_ provides a standard process for controlling what programs run when a Linux system boots up. Note that _systemd_ is available only from the Jessie versions of Raspbian OS.
+
 
 ### Create A Unit File
 
