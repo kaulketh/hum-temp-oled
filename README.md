@@ -1,10 +1,15 @@
 ## hum-temp-oled
 #### required package installation flow
 `sudo apt-get install python-dev python-pip libfreetype6-dev libjpeg8-dev libsdl1.2-dev`
+
 `sudo pip3 install --upgrade luma.oled`
+
 `sudo pip3 install adafruit-circuitpython-dht`
+
 `sudo pip3 install adafruit-circuitpython-lis3dh`
+
 `sudo apt install libgpiod2`
+
 
 #### sources, helpful links, useful hints
 
