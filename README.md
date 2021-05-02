@@ -1,4 +1,15 @@
 ## hum-temp-oled
+#### required package installation flow
+`sudo apt-get install python-dev python-pip libfreetype6-dev libjpeg8-dev libsdl1.2-dev`
+
+`sudo pip3 install --upgrade luma.oled`
+
+`sudo pip3 install adafruit-circuitpython-dht`
+
+`sudo pip3 install adafruit-circuitpython-lis3dh`
+
+`sudo apt install libgpiod2`
+
 
 #### sources, helpful links, useful hints
 
@@ -11,9 +22,8 @@
 - https://github.com/adafruit/Adafruit_Blinka/issues/259
 
 ## Run on boot as service
-
-#### A possibility to enable run at bootup is to use the _systemd_ files. _
-systemd_ provides a standard process for controlling what programs run when a Linux system boots up. Note that systemd is available only from the Jessie versions of Raspbian OS.
+#### A possibility to enable run at bootup is to use the _systemd_ files.
+_systemd_ provides a standard process for controlling what programs run when a Linux system boots up. Note that _systemd_ is available only from the Jessie versions of Raspbian OS.
 
 ### Create A Unit File
 
