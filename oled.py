@@ -51,6 +51,31 @@ free_sans_12 = __load_font(f"{__font_folder}FreeSans.ttf", 12)
 free_sans_16 = __load_font(f"{__font_folder}FreeSans.ttf", 16)
 
 
+def __get_core_temp():
+    temp = open('/sys/class/thermal/thermal_zone0/temp').read()
+    temp_str = f"{temp[0]}{temp[1]},{temp[2]}{temp[3]}{temp[4]}°C"
+    return temp_str
+
+
+def __show_core_temperature(x=left, font=ImageFont.load_default(),
+                            showtime=5.0):
+    temp = __get_core_temp()
+    with canvas(display) as draw:
+        draw.text((x, top),
+                  "RasPi Temperature",
+                  font=ImageFont.load_default(), fill=255)
+        draw.text((x, display.height / 3 - 3),
+                  temp, font=font, fill=255)
+    sleep(showtime)
+
+
+def __show_pi(showtime=5.0):
+    with canvas(display) as draw:
+        draw.rectangle((32, top - 3, 95, 63), outline=1, fill=1)
+        draw.bitmap((32, top - 3), Image.open('pi_logo.png'), fill=0)
+    sleep(showtime)
+
+
 def __show_humidity(x=left, font=ImageFont.load_default(), showtime=5.0):
     hum = get_values()[0]
     with canvas(display) as draw:
@@ -73,7 +98,7 @@ def __show_temperature(x=left, font=ImageFont.load_default(), showtime=5.0):
 
 def __show_hum_temp(line1, line2, x=left,
                     font=ImageFont.load_default(), showtime=5.0):
-    hum, temp = get_values()[0], get_values()[1]
+    hum, temp = get_values()[0:2]
     with canvas(display) as draw:
         draw.text((x, line1), f"H {hum}", font=font, fill=255)
         draw.text((x, line2), f"T {temp}", font=font, fill=255)
@@ -82,7 +107,7 @@ def __show_hum_temp(line1, line2, x=left,
 
 def __show_separate_hum_temp_(x=left, font=ImageFont.load_default(),
                               showtime=5.0):
-    hum, temp = get_values()[0], get_values()[1]
+    hum, temp = get_values()[0:2]
     with canvas(display) as draw:
         draw.text((x, top),
                   "Humidity", font=ImageFont.load_default(), fill=255)
@@ -94,21 +119,6 @@ def __show_separate_hum_temp_(x=left, font=ImageFont.load_default(),
                   "Temperature", font=ImageFont.load_default(), fill=255)
         draw.text((x, display.height / 3 - 3),
                   temp, font=font, fill=255)
-    sleep(showtime)
-
-
-def __get_core_temp():
-    temp = int(open('/sys/class/thermal/thermal_zone0/temp').read())
-    one = str(temp).__getitem__(0)
-    two = str(temp).__getitem__(1)
-    temp_str = '{0}{1}{2}{3}'.format(one, two, '°', 'C')
-    return temp_str
-
-
-def __show_pi(showtime=5.0):
-    with canvas(display) as draw:
-        draw.rectangle((32, top - 3, 95, 63), outline=1, fill=1)
-        draw.bitmap((32, top - 3), Image.open('pi_logo.png'), fill=0)
     sleep(showtime)
 
 
@@ -171,20 +181,16 @@ def __show_states(font=ImageFont.load_default(), single_line=False,
 
 def run_at_128x64():
     i = 0
-    while i < 35: # about 12 sec
+    while i < 40:  # about 15 sec?
         __show_states(font=free_sans_10, showtime=0.01)
         i += 1
 
-    # __show_humidity(x=5, font=tahoma)
-    # __show_states(font=free_sans_10)
-    # __show_temperature(x=5, font=tahoma)
-    # __show_states(font=free_sans_10)
-    # __show_separate_hum_temp_(x=5, font=dejavu)
-    # __show_states(font=free_sans_10, showtime=2.5)
     i = 0
     while i < 4:
-        __show_hum_temp(top + 3, top + 35, x=5, font=tahoma, showtime=3.0)
+        __show_hum_temp(top + 3, top + 35, x=5, font=tahoma, showtime=4)
         i += 1
+
+    __show_core_temperature(x=5, font=tahoma)
 
 
 def run_at_128x32():
