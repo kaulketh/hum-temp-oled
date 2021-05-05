@@ -51,49 +51,50 @@ free_sans_12 = __load_font(f"{__font_folder}FreeSans.ttf", 12)
 free_sans_16 = __load_font(f"{__font_folder}FreeSans.ttf", 16)
 
 
-def __show_humidity(x=left, font=ImageFont.load_default(), wait=5.0):
+def __show_humidity(x=left, font=ImageFont.load_default(), showtime=5.0):
     hum = get_values()[0]
     with canvas(display) as draw:
         draw.text((x, top),
                   "Humidity", font=ImageFont.load_default(), fill=255)
         draw.text((x, display.height / 3 - 3),
                   hum, font=font, fill=255)
-    sleep(wait)
+    sleep(showtime)
 
 
-def __show_temperature(x=left, font=ImageFont.load_default(), wait=5.0):
+def __show_temperature(x=left, font=ImageFont.load_default(), showtime=5.0):
     temp = get_values()[1]
     with canvas(display) as draw:
         draw.text((x, top),
                   "Temperature", font=ImageFont.load_default(), fill=255)
         draw.text((x, display.height / 3 - 3),
                   temp, font=font, fill=255)
-    sleep(wait)
+    sleep(showtime)
 
 
 def __show_hum_temp(line1, line2, x=left,
-                    font=ImageFont.load_default(), wait=5.0):
+                    font=ImageFont.load_default(), showtime=5.0):
     hum, temp = get_values()[0], get_values()[1]
     with canvas(display) as draw:
         draw.text((x, line1), f"H {hum}", font=font, fill=255)
         draw.text((x, line2), f"T {temp}", font=font, fill=255)
-    sleep(wait * 2)
+    sleep(showtime * 2)
 
 
-def __show_separate_hum_temp_(x=left, font=ImageFont.load_default(), wait=5.0):
+def __show_separate_hum_temp_(x=left, font=ImageFont.load_default(),
+                              showtime=5.0):
     hum, temp = get_values()[0], get_values()[1]
     with canvas(display) as draw:
         draw.text((x, top),
                   "Humidity", font=ImageFont.load_default(), fill=255)
         draw.text((x, display.height / 3 - 3),
                   hum, font=font, fill=255)
-    sleep(wait)
+    sleep(showtime)
     with canvas(display) as draw:
         draw.text((x, top),
                   "Temperature", font=ImageFont.load_default(), fill=255)
         draw.text((x, display.height / 3 - 3),
                   temp, font=font, fill=255)
-    sleep(wait)
+    sleep(showtime)
 
 
 def __get_core_temp():
@@ -104,14 +105,15 @@ def __get_core_temp():
     return temp_str
 
 
-def __show_pi(wait=5.0):
+def __show_pi(showtime=5.0):
     with canvas(display) as draw:
         draw.rectangle((32, top - 3, 95, 63), outline=1, fill=1)
         draw.bitmap((32, top - 3), Image.open('pi_logo.png'), fill=0)
-    sleep(wait)
+    sleep(showtime)
 
 
-def __show_state(font=ImageFont.load_default(), single_line=False, wait=5.0):
+def __show_states(font=ImageFont.load_default(), single_line=False,
+                  showtime=5.0):
     """
     Shell scripts for system monitoring from here :
     https://unix.stackexchange.com/questions/119126/command-to-display-memory-usage-disk-usage-and-cpu-load
@@ -141,19 +143,19 @@ def __show_state(font=ImageFont.load_default(), single_line=False, wait=5.0):
         with canvas(display) as draw:
             draw.text((left, display.height / 3),
                       f"IP: {ip}", font=font, fill=255)
-            sleep(wait)
+            sleep(showtime)
         with canvas(display) as draw:
             draw.text((left, display.height / 3),
                       cpu, font=font, fill=255)
-            sleep(wait)
+            sleep(showtime)
         with canvas(display) as draw:
             draw.text((left, display.height / 3),
                       mem_usage, font=font, fill=255)
-            sleep(wait)
+            sleep(showtime)
         with canvas(display) as draw:
             draw.text((left, display.height / 3),
                       mem_usage, font=font, fill=255)
-            sleep(wait)
+            sleep(showtime)
     else:
         with canvas(display) as draw:
             draw.text((left, top),
@@ -164,37 +166,37 @@ def __show_state(font=ImageFont.load_default(), single_line=False, wait=5.0):
                       mem_usage, font=font, fill="white")
             draw.text((left, top + 45),
                       disk, font=font, fill="white")
-        sleep(wait * 2)
+        sleep(showtime)
 
 
 def run_at_128x64():
-    __show_state(font=free_sans_10, wait=2)
-    __show_humidity(x=5, font=tahoma)
-    # __show_state(font=free_sans_10)
-    __show_temperature(x=5, font=tahoma)
-    # __show_state(font=free_sans_10)
+    i = 0
+    while i < 30:
+        __show_states(font=free_sans_10, showtime=0.01)
+        i += 1
+
+    # __show_humidity(x=5, font=tahoma)
+    # __show_states(font=free_sans_10)
+    # __show_temperature(x=5, font=tahoma)
+    # __show_states(font=free_sans_10)
     # __show_separate_hum_temp_(x=5, font=dejavu)
-    __show_state(font=free_sans_10, wait=2)
-    __show_hum_temp(top + 3, top + 35, x=5, font=tahoma)
+    # __show_states(font=free_sans_10, showtime=2.5)
+    __show_hum_temp(top + 3, top + 35, x=5, font=tahoma, showtime=10)
 
 
 def run_at_128x32():
-    __show_state(font=free_sans_10, single_line=True)
+    __show_states(font=free_sans_10, single_line=True)
     __show_hum_temp(top + 5, top + 37, font=tahoma)
 
 
 if __name__ == '__main__':
-
     while True:
-
         try:
             run_at_128x64()
-
         except KeyboardInterrupt:
             stderr.write("Oled interrupted.\n")
-            display.clear()
             exit()
-
         except Exception as e:
             stderr.write(f"OLED: Any error or exception occurred! , {e}\n")
+        finally:
             display.clear()
