@@ -12,28 +12,32 @@ from time import sleep
 import adafruit_dht
 
 SENSOR = adafruit_dht.DHT22(24)
-SPACE = " "
+EMPTY = ""
 
 
 def get_values():
-    temp_str = SPACE
-    hum_str = SPACE
-    ret_str = SPACE
+    """
+    Do not call up more often than every 3 seconds!!!!!!!
+    """
+
+    temperature_string = EMPTY
+    humidity_string = EMPTY
+    summary_string = EMPTY
     stdout.write("Get temperature and humidity values: ")
     humidity = SENSOR.humidity
     temperature = SENSOR.temperature
 
     if humidity is not None and temperature is not None:
-        temp_str = f"{temperature:04.1f}°C"
-        hum_str = f"{humidity:05.2f}%"
-        ret_str = f"{temp_str}{SPACE}{hum_str}"
-        stdout.write(f"{ret_str}\n")
+        temperature_string += f"{temperature:04.1f}°C"
+        humidity_string += f"{humidity:05.2f}%"
+        summary_string += f"{temperature_string} {humidity_string}"
+        stdout.write(f"{summary_string}\n")
     else:
         stderr.write(
             "Failed to get temperature and humidity values. Set to '0'!\n")
         humidity = 0
         temperature = 0
-    return hum_str, temp_str, ret_str, humidity, temperature
+    return humidity_string, temperature_string, summary_string, humidity, temperature
 
 
 if __name__ == '__main__':

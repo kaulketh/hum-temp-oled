@@ -77,7 +77,7 @@ def __show_hum_temp(line1, line2, x=left,
     with canvas(display) as draw:
         draw.text((x, line1), f"H {hum}", font=font, fill=255)
         draw.text((x, line2), f"T {temp}", font=font, fill=255)
-    sleep(showtime * 2)
+    sleep(showtime)
 
 
 def __show_separate_hum_temp_(x=left, font=ImageFont.load_default(),
@@ -171,7 +171,7 @@ def __show_states(font=ImageFont.load_default(), single_line=False,
 
 def run_at_128x64():
     i = 0
-    while i < 30:
+    while i < 35: # about 12 sec
         __show_states(font=free_sans_10, showtime=0.01)
         i += 1
 
@@ -181,7 +181,10 @@ def run_at_128x64():
     # __show_states(font=free_sans_10)
     # __show_separate_hum_temp_(x=5, font=dejavu)
     # __show_states(font=free_sans_10, showtime=2.5)
-    __show_hum_temp(top + 3, top + 35, x=5, font=tahoma, showtime=10)
+    i = 0
+    while i < 4:
+        __show_hum_temp(top + 3, top + 35, x=5, font=tahoma, showtime=3.0)
+        i += 1
 
 
 def run_at_128x32():
