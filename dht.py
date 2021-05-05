@@ -29,7 +29,7 @@ def get_values():
 
     if humidity is not None and temperature is not None:
         temperature_string += f"{temperature:04.1f}°C"
-        humidity_string += f"{humidity:05.2f}%"
+        humidity_string += f"{humidity:04.1f}%"
         summary_string += f"{temperature_string} {humidity_string}"
         stdout.write(f"{summary_string}\n")
     else:
