@@ -46,7 +46,11 @@ def get_values() -> tuple:
         humidity = 0
         temperature = 0
     return \
-        humidity_string, temperature_string, summary_string, humidity, temperature
+        humidity_string, \
+        temperature_string, \
+        summary_string, \
+        humidity, \
+        temperature
 
 
 if __name__ == '__main__':
