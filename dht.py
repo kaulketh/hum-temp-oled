@@ -15,9 +15,17 @@ SENSOR = adafruit_dht.DHT22(24)
 EMPTY = ""
 
 
-def get_values():
+def get_values() -> tuple:
     """
-    Do not call up more often than every 3 seconds!!!!!!!
+    Do not call up more often than every 3 seconds!
+
+    :rtype: tuple
+    :returns:   Tuple which contains:
+                humidity string(human readable),
+                temperature string(human readable),
+                concatenated string(human readable),
+                humidity value,
+                temperature value
     """
 
     temperature_string = EMPTY
