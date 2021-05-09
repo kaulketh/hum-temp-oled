@@ -28,29 +28,33 @@ def get_values() -> tuple:
                 temperature value
     """
 
-    temperature_string = EMPTY
-    humidity_string = EMPTY
-    summary_string = EMPTY
-    stdout.write("Get temperature and humidity values: ")
-    humidity = SENSOR.humidity
-    temperature = SENSOR.temperature
+    try:
 
-    if humidity is not None and temperature is not None:
-        temperature_string += f"{temperature:04.1f}°C"
-        humidity_string += f"{humidity:04.1f}%"
-        summary_string += f"{temperature_string} {humidity_string}"
-        stdout.write(f"{summary_string}\n")
-    else:
-        stderr.write(
-            "Failed to get temperature and humidity values. Set to '0'!\n")
-        humidity = 0
-        temperature = 0
-    return \
-        humidity_string, \
-        temperature_string, \
-        summary_string, \
-        humidity, \
-        temperature
+        temperature_string = EMPTY
+        humidity_string = EMPTY
+        summary_string = EMPTY
+        stdout.write(f"Get temperature and humidity values from DHT22 sensor: ")
+        humidity = SENSOR.humidity
+        temperature = SENSOR.temperature
+
+        if humidity is not None and temperature is not None:
+            temperature_string += f"{temperature:04.1f}°C"
+            humidity_string += f"{humidity:04.1f}%"
+            summary_string += f"{temperature_string} {humidity_string}"
+            stdout.write(f"{summary_string}\n")
+        else:
+            stderr.write(
+                "Failed to get temperature and humidity values. Set to '0'!\n")
+            humidity = 0
+            temperature = 0
+        return \
+            humidity_string, \
+            temperature_string, \
+            summary_string, \
+            humidity, \
+            temperature
+    except Exception as ex:
+        stderr.write(f"Error while reading from DHT22: {ex}")
 
 
 if __name__ == '__main__':
