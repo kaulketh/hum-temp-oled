@@ -193,7 +193,7 @@ def __show_states(font=ImageFont.load_default(), single_line=False,
 def run_at_128x64():
     i = 0
     while i < 40:  # about 15 sec?
-        __show_states(font=free_sans_10, showtime=0.01)
+        __show_states(font=free_sans_10, showtime=0.1)
         i += 1
 
     i = 0
