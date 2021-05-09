@@ -57,8 +57,8 @@ def __get_core_temp():
     try:
         src = "/sys/class/thermal/thermal_zone0/temp"
         temp = open(src).read()
-        temp_str = f"{temp[0]}{temp[1]},{temp[2]}{temp[3]}{temp[4]}°C"
-        stdout.write(f"Read from '{src}': {temp}")
+        temp_str = f"{temp[0:2]},{temp[2:-1]}°C"
+        stdout.write(f"Read from '{src}': {temp}\n")
         return temp_str
     except Exception as ex:
         stderr.write(f"Error while reading temperature: {ex}\n")
@@ -187,7 +187,7 @@ def __show_states(font=ImageFont.load_default(), single_line=False,
                           disk, font=font, fill="white")
             sleep(showtime)
     except Exception as xcptn:
-        stderr.write(f"Error while system monitoring: {xcptn}")
+        stderr.write(f"Error while system monitoring: {xcptn}\n")
 
 
 def run_at_128x64():

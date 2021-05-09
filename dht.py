@@ -33,7 +33,8 @@ def get_values() -> tuple:
         temperature_string = EMPTY
         humidity_string = EMPTY
         summary_string = EMPTY
-        stdout.write(f"Get temperature and humidity values from DHT22 sensor: ")
+        stdout.write(
+            f"Reading temperature and humidity values from DHT22 sensor...\n")
         humidity = SENSOR.humidity
         temperature = SENSOR.temperature
 
@@ -54,7 +55,7 @@ def get_values() -> tuple:
             humidity, \
             temperature
     except Exception as ex:
-        stderr.write(f"Error while reading from DHT22: {ex}")
+        stderr.write(f"Error while reading from DHT22: {ex}\n")
 
 
 if __name__ == '__main__':
