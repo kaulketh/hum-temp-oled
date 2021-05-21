@@ -57,7 +57,7 @@ def __get_core_temp():
     try:
         src = "/sys/class/thermal/thermal_zone0/temp"
         temp = open(src).read()
-        temp_str = f"{temp[0:2]},{temp[2:-1]}°C"
+        temp_str = f"  {temp[0:2]}°C"
         stdout.write(f"Read from '{src}': {temp}\n")
         return temp_str
     except Exception as ex:
@@ -84,7 +84,7 @@ def __show_pi(showtime=5.0):
 
 
 def __show_humidity(x=left, font=ImageFont.load_default(), showtime=5.0):
-    hum = get_values()[0]
+    hum = get_values()[5]
     with canvas(display) as draw:
         draw.text((x, top),
                   "Humidity", font=ImageFont.load_default(), fill=255)
@@ -94,7 +94,7 @@ def __show_humidity(x=left, font=ImageFont.load_default(), showtime=5.0):
 
 
 def __show_temperature(x=left, font=ImageFont.load_default(), showtime=5.0):
-    temp = get_values()[1]
+    temp = get_values()[6]
     with canvas(display) as draw:
         draw.text((x, top),
                   "Temperature", font=ImageFont.load_default(), fill=255)
@@ -107,14 +107,14 @@ def __show_hum_temp(line1, line2, x=left,
                     font=ImageFont.load_default(), showtime=5.0):
     hum, temp = get_values()[0:2]
     with canvas(display) as draw:
-        draw.text((x, line1), f"H {hum}", font=font, fill=255)
-        draw.text((x, line2), f"T {temp}", font=font, fill=255)
+        draw.text((x, line1), f"H. {hum}", font=font, fill=255)
+        draw.text((x, line2), f"T. {temp}", font=font, fill=255)
     sleep(showtime)
 
 
 def __show_separate_hum_temp_(x=left, font=ImageFont.load_default(),
                               showtime=5.0):
-    hum, temp = get_values()[0:2]
+    hum, temp = get_values()[5:7]
     with canvas(display) as draw:
         draw.text((x, top),
                   "Humidity", font=ImageFont.load_default(), fill=255)

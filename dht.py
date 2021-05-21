@@ -30,8 +30,10 @@ def get_values() -> tuple:
 
     try:
 
-        temperature_string = EMPTY
-        humidity_string = EMPTY
+        temperature_str_2d = EMPTY
+        humidity_str_2d = EMPTY
+        temperature_str_f = EMPTY
+        humidity_string_f = EMPTY
         summary_string = EMPTY
         stdout.write(
             f"Reading temperature and humidity values from DHT22 sensor...\n")
@@ -39,9 +41,11 @@ def get_values() -> tuple:
         temperature = SENSOR.temperature
 
         if humidity is not None and temperature is not None:
-            temperature_string += f"{temperature:04.1f}°C"
-            humidity_string += f"{humidity:04.1f}%"
-            summary_string += f"{temperature_string} {humidity_string}"
+            temperature_str_2d += f"{str(temperature)[0:2]}°C"
+            humidity_str_2d += f"{str(humidity)[0:2]}%"
+            summary_string += f"{temperature_str_2d} {humidity_str_2d}"
+            temperature_str_f += f"{temperature:04.1f}°C"
+            humidity_string_f += f"{humidity:04.1f}%"
             stdout.write(f"{summary_string}\n")
         else:
             stderr.write(
@@ -49,11 +53,14 @@ def get_values() -> tuple:
             humidity = 0
             temperature = 0
         return \
-            humidity_string, \
-            temperature_string, \
+            humidity_str_2d, \
+            temperature_str_2d, \
             summary_string, \
             humidity, \
-            temperature
+            temperature, \
+            temperature_str_f, \
+            humidity_string_f
+
     except Exception as ex:
         stderr.write(f"Error while reading from DHT22: {ex}\n")
 
