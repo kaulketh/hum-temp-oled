@@ -71,7 +71,7 @@ def __show_core_temperature(x=left, font=ImageFont.load_default(),
         draw.text((x, top),
                   "RasPi Temperature",
                   font=ImageFont.load_default(), fill=255)
-        draw.text((x, display.height / 3 - 3),
+        draw.text((x, display.height / 3),
                   temp, font=font, fill=255)
     sleep(showtime)
 
@@ -106,9 +106,13 @@ def __show_temperature(x=left, font=ImageFont.load_default(), showtime=5.0):
 def __show_hum_temp(line1, line2, x=left,
                     font=ImageFont.load_default(), showtime=5.0):
     hum, temp = get_values()[0:2]
+    h = "Humid.: "
+    t = "Temp.:  "
     with canvas(display) as draw:
-        draw.text((x, line1), f"H. {hum}", font=font, fill=255)
-        draw.text((x, line2), f"T. {temp}", font=font, fill=255)
+        draw.text((x, line1), h, font=ImageFont.load_default(), fill=255)
+        draw.text((50, line1), hum, font=font, fill=255)
+        draw.text((x, line2), t, font=ImageFont.load_default(), fill=255)
+        draw.text((50, line2), temp, font=font, fill=255)
     sleep(showtime)
 
 
