@@ -11,7 +11,7 @@ from io import BytesIO
 from sys import stderr, stdout
 from time import sleep
 
-from PIL import ImageFont, Image
+from PIL import Image, ImageFont
 from luma.core.interface.serial import i2c
 from luma.core.render import canvas
 from luma.oled.device import ssd1306
@@ -109,9 +109,9 @@ def __show_hum_temp(line1, line2, x=left,
     h = "Humid.: "
     t = "Temp.:  "
     with canvas(display) as draw:
-        draw.text((x, line1), h, font=ImageFont.load_default(), fill=255)
+        draw.text((x, line1 + 10), h, font=ImageFont.load_default(), fill=255)
         draw.text((50, line1), hum, font=font, fill=255)
-        draw.text((x, line2), t, font=ImageFont.load_default(), fill=255)
+        draw.text((x, line2 + 10), t, font=ImageFont.load_default(), fill=255)
         draw.text((50, line2), temp, font=font, fill=255)
     sleep(showtime)
 
@@ -152,12 +152,13 @@ def __show_states(font=ImageFont.load_default(), single_line=False,
         cpu = subprocess.check_output(cmd, shell=True).decode('utf-8')
 
         # Memory usage
-        cmd = "free -m | awk 'NR==2{printf \"Mem : %s / %s MB %.0f%%\", $3,$2," \
-              "$3*100/$2 }' "
+        cmd = "free -m | awk 'NR==2{printf \"" \
+              "Mem : %s / %s MB %.0f%%\", $3,$2,$3*100/$2 }' "
         mem_usage = subprocess.check_output(cmd, shell=True).decode('utf-8')
 
         # HDD usage
-        cmd = "df -h | awk '$NF==\"/\"{printf \"Disk : %d / %d GB %s\", $3,$2,$5}'"
+        cmd = "df -h | awk '$NF==\"/\"{printf \"" \
+              "Disk : %d / %d GB %s\", $3,$2,$5}'"
         disk = subprocess.check_output(cmd, shell=True).decode('utf-8')
 
         stdout.write(f"Reading system monitoring values...\n")
@@ -216,11 +217,12 @@ def run_at_128x32():
 if __name__ == '__main__':
     while True:
         try:
-            run_at_128x64()
+            # run_at_128x64()
+            __show_hum_temp(top + 3, top + 35, x=5, font=tahoma, showtime=10)
         except KeyboardInterrupt:
             stderr.write("OLED interrupted.\n")
             exit()
         except Exception as e:
             stderr.write(f"OLED: Any error or exception occurred! , {e}\n")
-        finally:
-            display.clear()
+        # finally:
+        #     display.clear()
