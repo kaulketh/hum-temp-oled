@@ -133,6 +133,23 @@ def __show_separate_hum_temp_(x=left, font=ImageFont.load_default(),
     sleep(showtime)
 
 
+def __show_cpu_load(x=left, font=ImageFont.load_default(),
+                    showtime=0.25):
+    # CPU load
+    cmd = "top - bn1 | grep \"Cpu(s)\" | sed \"s/.*, *\\([0-9.]*\\)%* " \
+          "id.*/\\1/\" | " \
+          "awk '{print 100 - $1\" %\"}'"
+
+    cpu = subprocess.check_output(cmd, shell=True).decode('utf-8')
+    with canvas(display) as draw:
+        draw.text((x + 3, top),
+                  "RasPi CPU Load",
+                  font=ImageFont.load_default(), fill=255)
+        draw.text((x + 10, display.height / 3),
+                  cpu, font=font, fill=255)
+    sleep(showtime)
+
+
 def __show_states(font=ImageFont.load_default(), single_line=False,
                   showtime=5.0):
     """
@@ -197,16 +214,21 @@ def __show_states(font=ImageFont.load_default(), single_line=False,
 
 def run_at_128x64():
     i = 0
-    while i < 40:  # about 15 sec?
-        __show_states(font=free_sans_10, showtime=0.1)
+    while i < 10:  # about 3 sec?
+        # __show_states(font=free_sans_10, showtime=0.1)
+        __show_cpu_load(x=15, font=tahoma)
+        # __show_temperature()
         i += 1
 
     i = 0
-    while i < 4:
-        __show_hum_temp(top + 3, top + 35, x=5, font=tahoma, showtime=4)
+    while i < 3:
+        __show_hum_temp(top + 3, top + 35, x=5, font=tahoma, showtime=3)
         i += 1
 
-    __show_core_temperature(x=5, font=tahoma)
+    i = 0
+    while i < 3:
+        __show_core_temperature(x=5, font=tahoma, showtime=3)
+        i += 1
 
 
 def run_at_128x32():
@@ -217,8 +239,8 @@ def run_at_128x32():
 if __name__ == '__main__':
     while True:
         try:
-            # run_at_128x64()
-            __show_hum_temp(top + 3, top + 35, x=5, font=tahoma, showtime=10)
+            run_at_128x64()
+            # __show_hum_temp(top + 3, top + 35, x=5, font=tahoma, showtime=10)
         except KeyboardInterrupt:
             stderr.write("OLED interrupted.\n")
             exit()
