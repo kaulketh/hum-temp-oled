@@ -43,7 +43,7 @@ def __load_font(font_file, size):
         bytes_font = BytesIO(f.read())
     return ImageFont.truetype(bytes_font, size)
 
-
+pixellari = __load_font(f"{__font_folder}pixellari.ttf", 30)
 tahoma = __load_font(f"{__font_folder}tahoma.ttf", 30)
 dejavu = __load_font(f"{__font_folder}dejavu.ttf", 28)
 arial_10 = __load_font(f"{__font_folder}arial.ttf", 10)
@@ -139,6 +139,7 @@ def __show_cpu_load(x=left, font=ImageFont.load_default(),
     cmd = "top - bn1 | grep \"Cpu(s)\" | sed \"s/.*, *\\([0-9.]*\\)%* " \
           "id.*/\\1/\" | " \
           "awk '{print 100 - $1\" %\"}'"
+    # "awk '{print 100 - $1}'"
 
     cpu = subprocess.check_output(cmd, shell=True).decode('utf-8')
     with canvas(display) as draw:
@@ -146,7 +147,7 @@ def __show_cpu_load(x=left, font=ImageFont.load_default(),
                   "RasPi CPU Load",
                   font=ImageFont.load_default(), fill=255)
         draw.text((x + 10, display.height / 3),
-                  cpu, font=font, fill=255)
+                  f"{cpu: >7}", font=font, fill=255)
     sleep(showtime)
 
 
@@ -214,19 +215,20 @@ def __show_states(font=ImageFont.load_default(), single_line=False,
 
 def run_at_128x64():
     i = 0
-    while i < 10:  # about 3 sec?
+    while i < 20:  # about 6 sec?
         # __show_states(font=free_sans_10, showtime=0.1)
-        __show_cpu_load(x=15, font=tahoma)
+        # __show_cpu_load(x=15, font=tahoma)
+        __show_cpu_load(x=15, font=pixellari)
         # __show_temperature()
         i += 1
 
     i = 0
-    while i < 3:
+    while i < 2:
         __show_hum_temp(top + 3, top + 35, x=5, font=tahoma, showtime=3)
         i += 1
 
     i = 0
-    while i < 3:
+    while i < 2:
         __show_core_temperature(x=5, font=tahoma, showtime=3)
         i += 1
 
