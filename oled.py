@@ -147,7 +147,7 @@ def __show_cpu_load(x=left, font=ImageFont.load_default(),
                   "RasPi CPU Load",
                   font=ImageFont.load_default(), fill=255)
         draw.text((x + 10, display.height / 3),
-                  f"{cpu: >7}", font=font, fill=255)
+                  f"{float(cpu[:2]):>3.0f}{cpu[-2]}", font=font, fill=255)
     sleep(showtime)
 
 
